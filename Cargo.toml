@@ -1,0 +1,7 @@
+[package]
+name = "bzls-rust"
+version = "0.1.0"
+authors = ["kongr45gpen <kongr45gpen@helit.org>"]
+
+[dependencies]
+hyper = "^0.9"
