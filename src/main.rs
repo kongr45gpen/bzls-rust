@@ -5,6 +5,8 @@ use hyper::client::Client;
 use std::io::Read;
 use std::string::String;
 use ansi_term::Colour::{Red, Green, Yellow, Cyan};
+use std::process::Command;
+use std::process::Stdio;
 
 struct Server {
     protocol: String,
@@ -52,6 +54,13 @@ fn main() {
 
     servers.sort_by(|a, b| b.players.cmp(&a.players));
 
+    // TODO: Error handling
+    let cols = Command::new("stty").arg("size").arg("-F").arg("/dev/stderr").stderr(Stdio::inherit()).output().unwrap();
+    let cols = String::from_utf8(cols.stdout).unwrap();
+    let cols: usize = cols.split_whitespace().last().unwrap().parse().unwrap();
+
+    println!("{}", cols);
+
     for server in servers {
         if server.players == 0 {
             break;
@@ -60,7 +69,7 @@ fn main() {
         println!("[{}, {}]  {}  {}",
             Yellow.paint(format!("{:2}", server.players)),
             Cyan.paint(server.observers.to_string()),
-            Green.paint(format!("{:50}", server.name)),
+            Green.paint(format!("{:1$}", server.name, cols/3)),
             Red.paint(server.address)
         );
     }
