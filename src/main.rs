@@ -52,7 +52,10 @@ fn main() {
         servers.push(server);
     }
 
-    servers.sort_by(|a, b| b.players.cmp(&a.players));
+    servers.sort_by(|a, b| match b.players.cmp(&a.players) {
+        Ordering::Equal => b.observers.cmp(&a.observers),
+        c => c
+    });
 
     let cols:usize = match Command::new("stty").arg("size").arg("-F").arg("/dev/stderr").stderr(Stdio::inherit()).output() {
         Ok(out) => String::from_utf8(out.stdout).unwrap().split_whitespace().last().unwrap().parse().unwrap(),
