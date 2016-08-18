@@ -27,7 +27,7 @@ fn main() {
     let mut data = String::new();
     res.read_to_string(&mut data).expect("Failed to read data");
 
-    for line in data.lines() {       
+    for line in data.lines() {
         let server: Vec<&str> = line.split(' ').collect();
 
         let data = server[2];
@@ -54,10 +54,10 @@ fn main() {
 
     servers.sort_by(|a, b| b.players.cmp(&a.players));
 
-    // TODO: Error handling
-    let cols = Command::new("stty").arg("size").arg("-F").arg("/dev/stderr").stderr(Stdio::inherit()).output().unwrap();
-    let cols = String::from_utf8(cols.stdout).unwrap();
-    let cols: usize = cols.split_whitespace().last().unwrap().parse().unwrap();
+    let cols:usize = match Command::new("stty").arg("size").arg("-F").arg("/dev/stderr").stderr(Stdio::inherit()).output() {
+        Ok(out) => String::from_utf8(out.stdout).unwrap().split_whitespace().last().unwrap().parse().unwrap(),
+        Err(_) => 80,
+    };
 
     println!("{}", cols);
 
