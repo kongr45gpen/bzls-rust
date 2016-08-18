@@ -1,5 +1,6 @@
 extern crate hyper;
 extern crate ansi_term;
+extern crate clap;
 
 use hyper::client::Client;
 use std::io::Read;
@@ -7,6 +8,8 @@ use std::string::String;
 use ansi_term::Colour::{Red, Green, Yellow, Cyan};
 use std::process::Command;
 use std::process::Stdio;
+use std::cmp::Ordering;
+use clap::{Arg, App, AppSettings, SubCommand};
 
 struct Server {
     protocol: String,
@@ -17,6 +20,17 @@ struct Server {
 }
 
 fn main() {
+    let args = App::new("bzls-rust")
+        .setting(AppSettings::ColoredHelp)
+        .arg(Arg::with_name("all")
+            .short("a")
+            .help("List all servers, even those with no players"))
+        .arg(Arg::with_name("reverse")
+            .short("r")
+            .help("Reverse result order"))
+        .get_matches();
+    let show_all = args.is_present("all");
+
     let mut servers: Vec<Server> = Vec::new();
 
     let client = Client::new();
@@ -57,6 +71,10 @@ fn main() {
         c => c
     });
 
+    if args.is_present("reverse") {
+        servers.reverse();
+    }
+
     let cols:usize = match Command::new("stty").arg("size").arg("-F").arg("/dev/stderr").stderr(Stdio::inherit()).output() {
         Ok(out) => String::from_utf8(out.stdout).unwrap().split_whitespace().last().unwrap().parse().unwrap(),
         Err(_) => 80,
@@ -65,7 +83,7 @@ fn main() {
     println!("{}", cols);
 
     for server in servers {
-        if server.players == 0 {
+        if server.players == 0 && !show_all {
             break;
         }
 
