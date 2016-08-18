@@ -66,6 +66,8 @@ fn main() {
         servers.push(server);
     }
 
+    let server_count = servers.len();
+
     servers.sort_by(|a, b| match b.players.cmp(&a.players) {
         Ordering::Equal => b.observers.cmp(&a.observers),
         c => c
@@ -80,11 +82,17 @@ fn main() {
         Err(_) => 80,
     };
 
-    println!("{}", cols);
+    let mut playing_count: u16 = 0;
+    let mut player_count: u32 = 0;
 
     for server in servers {
         if server.players == 0 && !show_all {
             break;
+        }
+
+        if server.players != 0 {
+            playing_count += 1;
+            player_count += server.players as u32;
         }
 
         println!("[{}, {}]  {}  {}",
@@ -94,4 +102,10 @@ fn main() {
             Red.paint(server.address)
         );
     }
+
+    println!("\n{} active server{}, {} server{} found, {} player{} total",
+        playing_count, if playing_count != 1 { "s" } else { "" },
+        server_count, if server_count != 1 { "s" } else { "" },
+        player_count, if player_count != 1 { "s" } else { "" }
+    );
 }
