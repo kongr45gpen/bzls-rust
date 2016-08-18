@@ -17,5 +17,8 @@ Options:
 Arguments:
 -    `<SEARCH>`    An address to search for
 
+## Screenshot
+![Screenshot with a server list](http://i.imgur.com/njsOYcf.png)
+
 ## Why Rust? It's completely unsuitable for this!
 Rust looks like an interesting programming language.
