@@ -26,11 +26,11 @@ fn main() {
         .arg(Arg::with_name("all")
             .short("a")
             .long("all")
-            .help("List all servers, even those with no players"))
+            .help("Lists all servers, even those with no players"))
         .arg(Arg::with_name("reverse")
             .short("r")
             .long("reverse")
-            .help("Reverse result order"))
+            .help("Reverses result order"))
         .arg(Arg::with_name("length")
             .short("l")
             .long("length")
@@ -38,7 +38,7 @@ fn main() {
             .help("The length of the server name"))
         .arg(Arg::with_name("SEARCH")
             .index(1)
-            .help("an address to search for"))
+            .help("An address to search for"))
         .get_matches();
     let show_all = args.is_present("all");
     let search = args.value_of("SEARCH");
