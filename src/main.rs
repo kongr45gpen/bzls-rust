@@ -21,19 +21,27 @@ struct Server {
 
 fn main() {
     let args = App::new("bzls-rust")
+        .version("0.1.0")
         .setting(AppSettings::ColoredHelp)
         .arg(Arg::with_name("all")
             .short("a")
+            .long("all")
             .help("List all servers, even those with no players"))
         .arg(Arg::with_name("reverse")
             .short("r")
+            .long("reverse")
             .help("Reverse result order"))
-        .arg(Arg::with_name("search")
+        .arg(Arg::with_name("length")
+            .short("l")
+            .long("length")
+            .value_name("N")
+            .help("The length of the server name"))
+        .arg(Arg::with_name("SEARCH")
             .index(1)
             .help("an address to search for"))
         .get_matches();
     let show_all = args.is_present("all");
-    let search = args.value_of("search");
+    let search = args.value_of("SEARCH");
 
     let mut servers: Vec<Server> = Vec::new();
 
@@ -81,9 +89,12 @@ fn main() {
         servers.reverse();
     }
 
-    let cols:usize = match Command::new("stty").arg("size").arg("-F").arg("/dev/stderr").stderr(Stdio::inherit()).output() {
-        Ok(out) => String::from_utf8(out.stdout).unwrap().split_whitespace().last().unwrap().parse().unwrap(),
-        Err(_) => 80,
+    let cols:usize = match args.value_of("length") {
+        None => match Command::new("stty").arg("size").arg("-F").arg("/dev/stderr").stderr(Stdio::inherit()).output() {
+            Ok(out) => String::from_utf8(out.stdout).unwrap().split_whitespace().last().unwrap().parse().unwrap(),
+            Err(_) => 80,
+        },
+        Some(l) => l.parse().expect("Please enter a valid length value")
     };
 
     let mut playing_count: u16 = 0;
