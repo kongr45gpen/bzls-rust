@@ -28,8 +28,12 @@ fn main() {
         .arg(Arg::with_name("reverse")
             .short("r")
             .help("Reverse result order"))
+        .arg(Arg::with_name("search")
+            .index(1)
+            .help("an address to search for"))
         .get_matches();
     let show_all = args.is_present("all");
+    let search = args.value_of("search");
 
     let mut servers: Vec<Server> = Vec::new();
 
@@ -87,7 +91,11 @@ fn main() {
 
     for server in servers {
         if server.players == 0 && !show_all {
-            break;
+            continue;
+        }
+
+        if search.is_some() && !server.address.contains(search.unwrap()) {
+            continue;
         }
 
         if server.players != 0 {
