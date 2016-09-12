@@ -109,8 +109,19 @@ fn main() {
             continue;
         }
 
-        if search.is_some() && !server.address.contains(search.unwrap()) {
-            continue;
+        if search.is_some() {
+            // We are searching for a string
+            let searching = search.unwrap();
+
+            let last_char = searching.chars().rev().next().unwrap();
+            if last_char == ':' && !server.address.starts_with(searching) {
+                // If the last character is a :, make sure our string starts
+                // with the search query, without having any other characters
+                // before
+                continue;
+            } else if last_char != ':' && !server.address.contains(searching) {
+                continue;
+            }
         }
 
         if server.players != 0 {
