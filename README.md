@@ -8,6 +8,7 @@ A program that lists BZFlag servers.
 Flags:
 -    `-a`, `--all`        Lists all servers, even those with no players
 -    `-h`, `--help`       Prints help information
+-    `-s`, `--no-stats`   Hides overall stats at the end of the list
 -    `-r`, `--reverse`    Reverses result order
 -    `-V`, `--version`    Prints version information
 
