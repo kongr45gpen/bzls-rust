@@ -31,6 +31,10 @@ fn main() {
             .short("r")
             .long("reverse")
             .help("Reverses result order"))
+        .arg(Arg::with_name("no_stats")
+            .short("s")
+            .long("no-stats")
+            .help("Don't display overall stats in the end of the list"))
         .arg(Arg::with_name("length")
             .short("l")
             .long("length")
@@ -122,9 +126,11 @@ fn main() {
         );
     }
 
-    println!("\n{} active server{}, {} server{} found, {} player{} total",
-        playing_count, if playing_count != 1 { "s" } else { "" },
-        server_count, if server_count != 1 { "s" } else { "" },
-        player_count, if player_count != 1 { "s" } else { "" }
-    );
+    if !args.is_present("no_stats") {
+        println!("\n{} active server{}, {} server{} found, {} player{} total",
+            playing_count, if playing_count != 1 { "s" } else { "" },
+            server_count, if server_count != 1 { "s" } else { "" },
+            player_count, if player_count != 1 { "s" } else { "" }
+        );
+    }
 }
