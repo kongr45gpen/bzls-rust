@@ -105,8 +105,18 @@ fn main() {
     let mut player_count: u32 = 0;
 
     for server in servers {
-        if server.players == 0 && !show_all {
-            continue;
+        if !show_all {
+            // Hide servers without players (unless we're showing all servers)
+
+            // Show servers with at least one player or observer if we are searching
+            if search.is_some() && server.players == 0 && server.observers == 0 {
+                continue;
+            }
+
+            // Ignore observers if we are not searching (unless they're too many)
+            if !search.is_some() && server.players == 0 && server.observers < 4 {
+                continue;
+            }
         }
 
         if search.is_some() {
